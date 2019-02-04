@@ -1,0 +1,221 @@
+---
+swagger: '2.0'
+info:
+  title: Events API
+  description: Add, remove and edit event data.
+  version: '1.0'
+schemes:
+  - http
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  "/events":
+    get:
+      tags:
+      - events
+      summary: Returns all the events.
+      description: ''
+      produces:
+      - application/json
+      responses:
+        '200':
+          description: A list of all events.
+          schema:
+            type: array
+            items:
+              "$ref": "#/definitions/event"
+        '401':
+          description: Unauthorized. Likely due to a bad or expired token.
+    post:
+      tags:
+      - events
+      summary: Creates a new event.
+      description: ''
+      consumes:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        description: Event object that needs to be created.
+        required: true
+        schema:
+          "$ref": "#/definitions/newEvent"
+      responses:
+        '200':
+          description: Success.
+        '401':
+          description: Unauthorized. Likely due to a bad or expired token.
+        '405':
+          description: Invalid input.
+    put:
+      tags:
+      - events
+      summary: Update an existing event.
+      description: ''
+      consumes:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        description: Updated event object.
+        required: true
+        schema:
+          "$ref": "#/definitions/event"
+      responses:
+        '200':
+          description: Success.
+        '401':
+          description: Unauthorized. Likely due to a bad or expired token.
+        '404':
+          description: Event not found,
+  "/events/{id}":
+    get:
+      tags:
+      - events
+      summary: Returns details of a particular event.
+      description: ''
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The `id` of the event.
+        required: true
+        type: string
+      responses:
+        '200':
+          description: The details of the event.
+          schema:
+            "$ref": "#/definitions/event"
+        '401':
+          description: Unauthorized. Likely due to a bad or expired token.
+        '404':
+          description: The event with the specified id doesn't exist.
+    delete:
+      tags:
+      - events
+      summary: Delete an existing event.
+      description: ''
+      parameters:
+      - in: path
+        name: id
+        required: true
+        type: string
+        description: The `id` of the event.
+      responses:
+        '200':
+          description: Success.
+        '401':
+          description: Unauthorized. Likely due to a bad or expired token.
+        '404':
+          description: Event not found.
+  "/login":
+    post:
+      tags:
+        - authentication
+      parameters:
+        - in: body
+          name: body
+          schema:
+            $ref: "#/definitions/userCredentials"
+      responses:
+        '200':
+          description: Login successful.
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+                description: The authentication token for subsequent requests.
+        '400':
+          description: Missing credentials.
+        '401':
+          description: Login failed.
+definitions:
+  event:
+    type: object
+    properties:
+      _id:
+        type: string
+      eventName:
+        type: string
+      eventType:
+        type: string
+      department:
+        type: string
+      tagline:
+        type: string
+      description:
+        type: string
+      teamSize:
+        type: integer
+        format: int32
+      entryFee:
+        type: integer
+        format: int32
+      prizeMoney:
+        type: array
+        items:
+          type: integer
+          format: int32
+      managers:
+        type: array
+        items:
+          $ref: "#/definitions/manager"
+      rounds:
+        type: array
+        items:
+          $ref: "#/definitions/round"
+  newEvent:
+    type: object
+    properties:
+      eventName:
+        type: string
+      eventType:
+        type: string
+      department:
+        type: string
+      tagline:
+        type: string
+      description:
+        type: string
+      teamSize:
+        type: integer
+        format: int32
+      entryFee:
+        type: integer
+        format: int32
+      prizeMoney:
+        type: array
+        items:
+          type: integer
+          format: int32
+      managers:
+        type: array
+        items:
+          $ref: "#/definitions/manager"
+      rounds:
+        type: array
+        items:
+          $ref: "#/definitions/round"
+  manager:
+    type: object
+    properties:
+      name:
+        type: string
+      phone:
+        type: string
+  round:
+    type: string
+  userCredentials:
+    type: object
+    properties:
+      username:
+        type: string
+      password:
+        type: string
