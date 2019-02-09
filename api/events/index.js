@@ -40,6 +40,22 @@ module.exports = (db) => {
         }
     });
 
+
+    //DELETE /events/:id
+    router.delete('/:id', async (request, response) => {
+        try {
+            const deleted = await Event.delete_one(request.params.id);
+            // console.log(deleted);
+            if (deleted.CommandResult.message.Response.parsed === true) {
+                response.status(200).json(event);
+            } else {
+                response.status(404).json({message: 'Event not found'});
+            }
+        } catch (e) {
+            response.status(200).json({message: 'deleted'});
+        }
+    });
+
     //PUT /events
     router.put('/', async (request, response) => {
         try {
